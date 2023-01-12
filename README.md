@@ -26,7 +26,7 @@ Project was firstly developed during [XRPL NFT hackathon.](https://devpost.com/s
 
 ### REST API endpoints
 
-⚫ `/api/mint` - Creates new claimable event and premints NFTs for it. You must have at least X XRP in order to use this to handle the reserve requirements for the NFTs and the minting process which uses [Tickets](https://xrpl.org/tickets.html), where X is amount of tokens that should be minted + additional XRP for feees.
+⚫ `/api/mint` - Creates new claimable event and premints NFTs for it. You must have at least X XRP in order to use this to handle the reserve requirements for the NFTs and the minting process which uses [Tickets](https://xrpl.org/tickets.html), where X is amount of tokens that should be minted multiplied by 2 + additional XRP for feees.
 
 **@param {string} walletAddress** - Wallet address from user requesting claim
 
@@ -42,11 +42,13 @@ Project was firstly developed during [XRPL NFT hackathon.](https://devpost.com/s
 
 ⚫ `/api/claim` - Checks if user is eligible for NFT claim or creates new offer that allows for claiming NFT for specific event. Endpoint returns response with sellOfferID that has to be accepted by user afterwards.
 
-**@param {string} walletAddress** - Wallet address from user requesting claim
+**@param {string} walletAddress** - The wallet address of the user trying to claim
 
-**@param {string} id** - ID of checked event
+**@param {integer} type** - The type of claim (1 for checking claim status and metadata, 2 for claiming)
 
-**@param {boolean} onlyCheckStatus** - Indicated whether or not endpoint should just check user's eligibility status instead of creating new offer for NFT from event
+**@param {string} minter** - The minter address of the event
+
+**@param {string} eventId** - The ID of the event
 
 **Possible responses**
 
@@ -64,13 +66,17 @@ Project was firstly developed during [XRPL NFT hackathon.](https://devpost.com/s
 
 **@param {string} walletAddress** - Wallet address from user requesting verification
 
-**@param {string} id** - ID of NFT for which ownership should be checked
-
 **@param {string} signature** - Signature from requesting user
+
+**@param {string} minter** - The minter address of the event
+
+**@param {string} eventId** - The ID of the event
 
 ⚫ `/api/attendees` - Looks up attendees for event with specific id
 
-**@param {string} id** - ID of checked event
+**@param {string} minter** - The minter address of the event
+
+**@param {string} eventId** - The ID of the event
 
 ## ToDo
 
@@ -83,8 +89,6 @@ Project was firstly developed during [XRPL NFT hackathon.](https://devpost.com/s
 ⚫ Checking whether or not deadline for claiming NFTs has passed
 
 ⚫ Integration with updated UI and XUMM wallet
-
-⚫ Example integration with database
 
 ## Description
 
