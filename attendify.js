@@ -38,8 +38,22 @@ class Attendify {
     try {
       if (eventId == undefined) throw new Error(`${ERR_PARAMS}`);
       let data = await fs.promises.readFile("participants.json", "utf-8");
-      let participantsJson = JSON.parse(data.toString());
-      console.log(data);
+      console.log(typeof data);
+      let participantsJson;
+      if (data == "") {
+        participantsJson = { data: [[]] };
+      } else {
+        participantsJson = JSON.parse(data);
+        if (participantsJson.data[eventId]) {
+          // Check if user wallet is already participant for selected event
+          const userParticipantData = participantsJson.data[eventId].find(
+            (obj) => {
+              return obj.user === walletAddress;
+            }
+          );
+          if (userParticipantData != undefined) return true;
+        }
+      }
       if (walletAddress == undefined) {
         // Pushes an empty array to the participants.json file if no wallet address is provided
         participantsJson.data.push([]);
@@ -51,11 +65,12 @@ class Attendify {
           },
         ]);
       } else {
-        // Adds the participant to the event's list of participants
+        // Adds the user wallet to the event's list of participants if it's not already there
         participantsJson.data[eventId].push({
           user: walletAddress,
         });
       }
+
       await fs.promises.writeFile(
         "participants.json",
         JSON.stringify(participantsJson)

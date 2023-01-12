@@ -102,7 +102,6 @@ app.get("/api/claim", (req, res) => {
         throw new Error(`${ERR_PARAMS}`);
       let data = await fs.promises.readFile("participants.json", "utf-8");
       let requestedClaim = JSON.parse(data.toString()).data[parseInt(eventId)];
-      console.log(requestedClaim);
       const claimableTokens = await AttendifyLib.getBatchNFTokens(
         minter,
         eventId
@@ -117,7 +116,7 @@ app.get("/api/claim", (req, res) => {
       // Check if user already claimed NFT
       if (
         requestedClaim.find((obj) => {
-          return obj.name === walletAddress;
+          return obj.user === walletAddress;
         }) != undefined
       )
         return res.send({
