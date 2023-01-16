@@ -1,0 +1,37 @@
+{
+  "name": "mern-boilerplate",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "start": "nodemon backend/server",
+    "client": "npm start --prefix frontend",
+    "dev": "concurrently \"npm start\" \"npm run client\"",
+    "test": "node tests/App.test.js"
+  },
+  "keywords": [],
+  "author": "",
+  "type": "module",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.1.3",
+    "base58-js": "^1.0.5",
+    "body-parser": "^1.20.1",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "express-async-handler": "^1.1.4",
+    "form-data": "^4.0.0",
+    "fs": "^0.0.1-security",
+    "ipfs-http-client": "^59.0.0",
+    "localstorage": "^1.0.1",
+    "mongoose": "^5.11.5",
+    "xrpl": "^2.5.0-beta.1",
+    "xrpl-secret-numbers": "^0.3.3",
+    "xumm-oauth2-pkce": "^2.2.0",
+    "xumm-sdk": "^1.4.0"
+  },
+  "devDependencies": {
+    "concurrently": "^5.3.0",
+    "nodemon": "^2.0.6"
+  }
+}
