@@ -26,7 +26,9 @@ Project was firstly developed during [XRPL NFT hackathon.](https://devpost.com/s
 
 ### REST API endpoints
 
-⚫ `/api/mint` - Creates new claimable event and premints NFTs for it. You must have at least X XRP in order to use this to handle the reserve requirements for the NFTs and the minting process which uses [Tickets](https://xrpl.org/tickets.html), where X is amount of tokens that should be minted multiplied by 2 + additional XRP for feees.
+This API is built using the ExpressJS framework and the XRPL library, it connect to the local Attendify.js class to perform most of the actions. 
+
+⚫ `GET /api/mint` - Creates new claimable event and premints NFTs for it. You must have at least X XRP in order to use this to handle the reserve requirements for the NFTs and the minting process which uses [Tickets](https://xrpl.org/tickets.html), where X is amount of tokens that should be minted multiplied by 2 + additional XRP for feees.
 
 **@param {string} walletAddress** - Wallet address from user requesting claim
 
@@ -40,7 +42,7 @@ Project was firstly developed during [XRPL NFT hackathon.](https://devpost.com/s
 
 **@param {string} loc** - Location of event
 
-⚫ `/api/claim` - Checks if user is eligible for NFT claim or creates new offer that allows for claiming NFT for specific event. Endpoint returns response with sellOfferID that has to be accepted by user afterwards.
+⚫ `GET /api/claim` - Checks if user is eligible for NFT claim or creates new offer that allows for claiming NFT for specific event. Endpoint returns response with sellOfferID that has to be accepted by user afterwards.
 
 **@param {string} walletAddress** - The wallet address of the user trying to claim
 
@@ -62,7 +64,7 @@ Project was firstly developed during [XRPL NFT hackathon.](https://devpost.com/s
 
     -`transferred` - Indicates that new sell offer for NFT related to selected event was created successfully and details were sent to user
 
-⚫ `/api/verifyOwnership` - Verifies whether or not user actually owns specififed NFT
+⚫ `GET /api/verifyOwnership` - Verifies whether or not user owns NFT with provided id for particular user.
 
 **@param {string} walletAddress** - Wallet address from user requesting verification
 
@@ -72,7 +74,7 @@ Project was firstly developed during [XRPL NFT hackathon.](https://devpost.com/s
 
 **@param {string} eventId** - The ID of the event
 
-⚫ `/api/attendees` - Looks up attendees for event with specific id
+⚫ `GET /api/attendees` - Looks up attendees for event with specific id with NFTs create by minter address.
 
 **@param {string} minter** - The minter address of the event
 
