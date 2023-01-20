@@ -39,21 +39,40 @@ In order to run a test of all backend api routes please use the following comman
 
 This will run 'node /tests/App.test.js'
 
-# Test reference:
+# Test reference (examples of proper post/get body object for each route):
 
 test1()
 Mint NFT test
 
-test2()Burn NFT test
-test3()xummCreateSellOffer
-test4()xummCreateBuyOffer
-test5()xummAcceptOffer
-test6()xummCancelOffer
-test7()createTickets
-test8()mintTickets
-test9()ticket_info
-test10()account_info
-test11()getTokensFromLedger
+test2()
+Burn NFT test
+
+test3()
+xummCreateSellOffer
+
+test4()
+xummCreateBuyOffer
+
+test5()
+xummAcceptOffer
+
+test6()
+xummCancelOffer
+
+test7()
+createTickets
+
+test8()
+mintTickets
+
+test9()
+ticket_info
+
+test10()
+account_info
+
+test11()
+getTokensFromLedger
 
 
 
