@@ -7,6 +7,13 @@ Please note, mongo has been disconnected. Any db solution can replace it but isn
 
 In order to facilitate storing json files with a public uri and continue using the site without the need for a db solution XummApi.js has was introduced. It consists of 11 REST API endpoints and will allow the developer to build on top a frontend and user db solution that utilizes NFT's on the XRPL.
 
+# Getting started
+You will need to edit the xummapi.js file before being able to successfully run the app. You will need api account and key information for Pinata and the Xumm app. Additionally it is recommended that you have an XUMM wallet / app installed. More than one wallet address can be useful when testing.
+
+Please visit these sites to obtain api key info:
+'https://xumm.readme.io/'
+'https://www.pinata.cloud/'
+
 # Installing
 
 Simply do a npm install in each folder that contains a package.json file.
