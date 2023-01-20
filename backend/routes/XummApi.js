@@ -2,11 +2,12 @@ import express from 'express'
 import xrpl from "xrpl";
 import fetch from 'node-fetch'
 import axios from 'axios'
+import {create} from 'ipfs-http-client';
 import XrplNFTHelper from './XrplNFTHelper.js';
 import XummSdk from 'xumm-sdk';
 
 
-const xummApi = '*'
+const xummApi = ''
 const xummSecret = ''
 
 const pinataApiKey = ''
@@ -15,7 +16,7 @@ const pinataSecretApiKey = ''
 const tempAddr = "rfRZeyG8YfSmKPqdX6PVLFJ5bdPCraDAsA"
 
 const minterAddress = "rhk5dvLzcQ9HywR4cTsms3TqunAb94bXmv"
-const minterKey = "t"
+const minterKey = ""
 
 const sdk = new XummSdk.XummSdk(xummApi,xummSecret)
 
@@ -37,10 +38,6 @@ const xummCall = async (payload) => {
     return data
 }
 
-
-
-
-
 /*
 * Gets the ticket objects from an account and mints all tickets it finds on the account passed.
 *
@@ -53,7 +50,6 @@ const xummCall = async (payload) => {
 router.route('/mintTickets').post( (req,res) => { 
 
   const nftManager = new XrplNFTHelper({Account: req.body.metadata.account})
-
   nftManager.getTicketInfo().then( tickets => {
   nftManager.mintTickets(tickets,minterKey).then(nfts => { 
 
@@ -61,9 +57,6 @@ router.route('/mintTickets').post( (req,res) => {
       })
     })
 })
-
-
-
 
 /*
 * Creates any number of tickets passed. These tickets can later be used to mint in batches greater than 1 via /mintTickets.
@@ -75,23 +68,18 @@ router.route('/mintTickets').post( (req,res) => {
 */
 router.route('/createTickets').post((req,res) => {
  
-  
   let payload = {
     TransactionType: "TicketCreate",
     TicketCount: req.body.metadata.TicketCount
   }
 
   try {
-
     xummCall(payload).then( (xummInfo) => {
         
         let response = JSON.stringify(xummInfo); 
         res.send(response);
     
     })
-
-
-    
   } catch (error) {
     console.log(error)
   }
@@ -109,17 +97,13 @@ router.route('/createTickets').post((req,res) => {
 */
 router.route('/xummCancelOffer').post((req,res) => {
   
-
   let offers = []
-
   offers.push(req.body.metadata.offerID)
-
  
  let payload = {
                   TransactionType: "NFTokenCancelOffer",
                   NFTokenOffers: offers
                }
-
 
                 try {
 
@@ -150,13 +134,10 @@ router.route('/xummCancelOffer').post((req,res) => {
 */
 router.route('/xummAcceptOffer').post((req,res) => {
 
-  
-
   let payload = {
                   TransactionType: "NFTokenAcceptOffer",
                   NFTokenSellOffer: req.body.metadata.NFTokenSellOffer,
                 }
-
 
                 try {
                 
@@ -188,8 +169,6 @@ router.route('/xummAcceptOffer').post((req,res) => {
 */
 router.route('/xummCreateBuyOffer').post((req,res) => {
  
-
-  
   let payload = {
                   TransactionType: "NFTokenCreateOffer",
                   Owner: req.body.metadata.owner,
@@ -197,17 +176,12 @@ router.route('/xummCreateBuyOffer').post((req,res) => {
                   Amount: req.body.metadata.Amount       
                 }
 
-            
               try {
 
                   xummCall(payload).then( (xummInfo) => {
-                      
                       let response = JSON.stringify(xummInfo); 
                       res.send(response);
-                  
                   })
-              
-                  
                 } catch (error) {
                   console.log(error)
                 }
@@ -239,16 +213,12 @@ router.route('/xummCreateSellOffer').post((req,res) => {
 
 
                 try {
-
                   xummCall(payload).then( (xummInfo) => {
                       
                         let response = JSON.stringify(xummInfo); 
                         res.send(response);
                     
-                    })
-                
-                
-                    
+                    })             
                   } catch (error) {
                     console.log(error)
                   }
@@ -289,9 +259,6 @@ router.route('/xummMint').post((req,res) => {
         }
     ).then(function (ipfsData) {    
 
-      
-      
-
     let payload = {
                               TransactionType: "NFTokenMint", 
                               URI: xrpl.convertStringToHex(`https://gateway.pinata.cloud/ipfs/${ipfsData.data.IpfsHash}`), 
@@ -304,7 +271,6 @@ router.route('/xummMint').post((req,res) => {
                                 }
                             ]
                    }
-
 
                    try {
 
@@ -374,11 +340,8 @@ router.route('/xummMint').post((req,res) => {
 router.route('/getTokensFromLedger').post((req, res) => {
 
     const nftManager = new XrplNFTHelper({Account: req.body.metadata.account});
-  
     nftManager.getTokensFromLedger().then( (result) => {
-    
-      res.send(result)
-  
+      res.send(result);
     })
   })
 
@@ -449,8 +412,7 @@ router.route('/ticket_info').post( (req,res) => {
   const nftManager = new XrplNFTHelper({Account: req.body.metadata.account})
   nftManager.getTicketInfo().then( info => {
    
-    let response = JSON.stringify(info); 
-       
+    let response = JSON.stringify(info);  
     res.send(response);
 
   })
