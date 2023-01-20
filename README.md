@@ -40,7 +40,10 @@ In order to run a test of all backend api routes please use the following comman
 This will run 'node /tests/App.test.js'
 
 # Test reference:
-test1();//Mint NFT test
+
+test1()
+Mint NFT test
+
 test2();//Burn NFT test
 test3();//xummCreateSellOffer
 test4();//xummCreateBuyOffer
