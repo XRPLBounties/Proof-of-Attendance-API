@@ -1,9 +1,12 @@
-Full readme and front end tests can be found here - still under construction:
+XUMMapi.js requires api keys before tests can be ran.
 
-https://github.com/spicycheeto/XRPL-NFT-Proof-of-Attendance-Infrastructure
+Tests can be found at /tests/App.test.js
+
+Please view full docs here:
+https://github.com/spicycheeto/Proof-of-Attendance
 
 notes: 
+-Minting is coming back successful, however memos are not viewable after transaction. Suggest utilizing storage solution along with user database. 
 
--memos are not attaching but single minting is coming back successful. 
--UX designs for market place needed.
 -*frontend2.0 was built to test xummapi.js
+-*additional frontend solutions needed awaiting requirements document.
