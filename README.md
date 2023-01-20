@@ -11,5 +11,5 @@ In order to facilitate storing json files with a public uri and continue using t
 
 Simply do a npm install in each folder that contains a package.json file.
 
-### Frontend2.0/npm install
-### ./npm install
+### `Frontend2.0/npm install`
+### `./npm install`
