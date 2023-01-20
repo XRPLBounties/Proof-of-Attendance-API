@@ -14,9 +14,47 @@ Please visit these sites to obtain api key info:
 'https://xumm.readme.io/'
 'https://www.pinata.cloud/'
 
+After api info has been obtained edit the Xummapi.js file with the proper information.
+
 # Installing
 
 Simply do a npm install in each folder that contains a package.json file.
 
 ### `Frontend2.0/npm install`
 ### `./npm install`
+
+
+# Running
+
+Run the backend followed by running the frontend if necessary. If just testing the frontend UX/UI then no need to run backend.
+
+### `./npm run`
+### `Frontend2.0/npm run`
+
+# Testing
+All XRPL functionality can be done live through the XUMM wallet app. Available functionality is listed at the bottom of /tests/App.test.js. The functionality is given by the name of the backend route. Backend route api rest data details can be found in Xummapi.js within the comments. All parameters and data structure requirements are listed for each POST or GET route. Additionally the data that is returned is listed. In most cases an XUMM payload is returned that contains a qr code png file url. This url is needed to be scanned by the XUMM app wallet owner. In some cases certain transactions can only be done by authorized users.
+
+In order to run a test of all backend api routes please use the following command:
+### `npm test`
+
+This will run 'node /tests/App.test.js'
+
+# Test reference:
+test1();//Mint NFT test
+test2();//Burn NFT test
+test3();//xummCreateSellOffer
+test4();//xummCreateBuyOffer
+test5();//xummAcceptOffer
+test6();//xummCancelOffer
+test7();//createTickets
+test8();//mintTickets
+test9();//ticket_info
+test10();//account_info
+test11();//getTokensFromLedger
+
+
+
+
+
+
+
