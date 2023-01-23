@@ -6,7 +6,7 @@ import XummSdk from 'xumm-sdk';
 
 
 
-const sdk = new XummSdk.XummSdk('d16951f8-6528-4c3f-88e9-37333e383421','e6d8a068-a55b-4e5a-b540-016847d7e376')
+const sdk = new XummSdk.XummSdk('*','*')
 
 
 
