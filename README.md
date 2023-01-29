@@ -80,7 +80,7 @@ Example request `http://localhost:4000/api/claim?walletAddress=rpHJL8bRW81shYm3L
 
 **@param {string} walletAddress** - Wallet address from user requesting verification
 
-**@param {string} signature** - Signature from requesting user
+**@param {string} signature** - Signature that should be signed by the same account as walletAddress. This could be done either using XUMM or `sign` function from xrpl library
 
 **@param {string} minter** - The minter address of the event
 
