@@ -40,7 +40,7 @@ This API is built using the ExpressJS framework and the XRPL library, it connect
 
 **@param {string} walletAddress** - Wallet address from user requesting claim
 
-**@param {integer} tokenCount** - Amount of NFTs that should be create for the event
+**@param {integer} tokenCount** - Amount of NFTs that should be created for the event
 
 **@param {string} url** - Url to Image for event | Preferably this should be stored on IPFS
 
