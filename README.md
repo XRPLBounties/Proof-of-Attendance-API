@@ -76,7 +76,7 @@ Example request `http://localhost:4000/api/mint?walletAddress=rpHJL8bRW81shYm3Lw
     
 Example request `http://localhost:4000/api/claim?walletAddress=rpHJL8bRW81shYm3LwwsXovABps6SM51RS&type=2&minter=rMBU1wwAJZZz36YBNxug7YYHKeC5k3vqfG&eventId=0`
 
-⚫ `GET /api/verifyOwnership` - Verifies whether or not user owns NFT with provided id for particular user.
+⚫ `GET /api/verifyOwnership` - Verifies whether or not user owns NFT with provided id for particular event from `minter` account.
 
 **@param {string} walletAddress** - Wallet address from user requesting verification
 
@@ -114,4 +114,6 @@ Example request `http://localhost:4000/api/attendees?minter=raY33uxEbZFg7YS1ofFR
 
 ⚫copy .env.example content to .env file and fill with your data and API keys
 
-⚫execute `npm run start` in CLI
+⚫execute `npm run start` in CLI to start the server
+
+⚫execute `npm run test` to start test process
