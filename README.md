@@ -50,6 +50,8 @@ This API is built using the ExpressJS framework and the XRPL library, it connect
 
 **@param {string} loc** - Location of event
 
+Example request `http://localhost:4000/api/mint?walletAddress=rpHJL8bRW81shYm3LwwsXovABps6SM51RS&tokenCount=5&url=ipfs://QmQDDD1cNgnyhPC4pBLZKhVeu12oyfCAJoWr1Qc1QgbkPN&title=test_title&desc=test_description&loc=Warsaw`
+
 ⚫ `GET /api/claim` - Checks if user is eligible for NFT claim or creates new offer that allows for claiming NFT for specific event. Endpoint returns response with sellOfferID that has to be accepted by user afterwards.
 
 **@param {string} walletAddress** - The wallet address of the user trying to claim
@@ -71,6 +73,8 @@ This API is built using the ExpressJS framework and the XRPL library, it connect
     -`success` - If `onlyCheckStatus` parameter was true it indicated that current parameters for selected event were sent
 
     -`transferred` - Indicates that new sell offer for NFT related to selected event was created successfully and details were sent to user
+    
+Example request `http://localhost:4000/api/claim?walletAddress=rpHJL8bRW81shYm3LwwsXovABps6SM51RS&type=2&minter=rMBU1wwAJZZz36YBNxug7YYHKeC5k3vqfG&eventId=0`
 
 ⚫ `GET /api/verifyOwnership` - Verifies whether or not user owns NFT with provided id for particular user.
 
@@ -82,11 +86,15 @@ This API is built using the ExpressJS framework and the XRPL library, it connect
 
 **@param {string} eventId** - The ID of the event
 
+Example request `http://localhost:4000/api/verifyOwnership?walletAddress=rpHJL8bRW81shYm3LwwsXovABps6SM51RS&signature=12000022800000002401469CC8201B00779113614000000000C65D4068400000000000000D7321ED57D41105FC480545763677D2100C8949324A97811FE5CB45594B5E73991BBF927440625FEB2E8DEA86736368DE716C0223586C97C44519B45500653F7C505DA9C24F3F8789BBEE917871DC862DB826ACE7B64AB485BADB0C46776E931EA0EC55840381143CBB7B1E0212681492733BDA77986A6A7C4C2B4A83144B4E9C06F24296074F7BC48F92A97916C6DC5EA9&minter=raY33uxEbZFg7YS1ofFRioeENLsVdCgpC5&eventId=0`
+
 ⚫ `GET /api/attendees` - Looks up attendees for event with specific id with NFTs create by minter address.
 
 **@param {string} minter** - The minter address of the event
 
 **@param {string} eventId** - The ID of the event
+
+Example request `http://localhost:4000/api/attendees?minter=raY33uxEbZFg7YS1ofFRioeENLsVdCgpC5&eventId=0`
 
 ## ToDo
 
