@@ -30,7 +30,7 @@ let walletForSignatureVerification = {
 // Empty variables for tests
 let newUser;
 let testEvent;
-let nftOffer;
+//let nftOffer;
 
 // API tests
 describe("Testing typical user flow", function () {
@@ -46,7 +46,7 @@ describe("Testing typical user flow", function () {
   it("Minting NFTs for new event", async () => {
     return requestWithSupertest
       .get(
-        `/api/mint?walletAddress=${testUser.classicAddress}&tokenCount=5&url=ipfs://QmQDDD1cNgnyhPC4pBLZKhVeu12oyfCAJoWr1Qc1QgbkPN&title=test_title&desc=test_description&loc=Warsaw`
+        `/api/mint?walletAddress=${testUser.classicAddress}&tokenCount=3&url=ipfs://QmQDDD1cNgnyhPC4pBLZKhVeu12oyfCAJoWr1Qc1QgbkPN&title=test_title&desc=test_description&loc=Warsaw`
       )
       .then(async (r) => {
         console.log(JSON.parse(r.text).result);
@@ -76,7 +76,7 @@ describe("Testing typical user flow", function () {
   it("Checking if it's possible to claim NFT for event", async () => {
     return requestWithSupertest
       .get(
-        `/api/claim?walletAddress=${testUser.classicAddress}&minter=${minter}&eventId=${testEvent.id}&type=1`
+        `/api/claim?walletAddress=${testUser.classicAddress}&minter=${minter}&eventId=${testEvent.eventId}&type=1`
       )
       .then((r) => {
         console.log(JSON.parse(r.text).result.length);
@@ -90,7 +90,7 @@ describe("Testing typical user flow", function () {
   it("Claiming offer for NFT from event", async () => {
     return requestWithSupertest
       .get(
-        `/api/claim?walletAddress=${testUser.classicAddress}&minter=${minter}&eventId=${testEvent.id}&type=2`
+        `/api/claim?walletAddress=${testUser.classicAddress}&minter=${minter}&eventId=${testEvent.eventId}&type=2`
       )
       .then((r) => {
         console.log(JSON.parse(r.text).result.length);
@@ -104,7 +104,7 @@ describe("Testing typical user flow", function () {
 
   it("Looking up if the test user is on the attendees list for test event", async () => {
     return requestWithSupertest
-      .get(`/api/attendees?minter=${minter}&eventId=${testEvent.id}`)
+      .get(`/api/attendees?minter=${minter}&eventId=${testEvent.eventId}`)
       .then((r) => {
         console.log(JSON.parse(r.text));
         r.res.statusCode.should.equal(200);
@@ -127,9 +127,11 @@ describe("Testing typical user flow", function () {
       Sequence: my_seq,
     };
     const signature = await myWallet.sign(txJSON);
+    console.log("minter ", minter);
+    console.log("signature ", signature.tx_blob);
     return requestWithSupertest
       .get(
-        `/api/verifyOwnership?walletAddress=${walletForSignatureVerification.classicAddress}&signature=${signature.tx_blob}&minter=raY33uxEbZFg7YS1ofFRioeENLsVdCgpC5&eventId=${testEvent.id}`
+        `/api/verifyOwnership?walletAddress=${walletForSignatureVerification.classicAddress}&signature=${signature.tx_blob}&minter=raY33uxEbZFg7YS1ofFRioeENLsVdCgpC5&eventId=${testEvent.eventId}`
       )
       .then((r) => {
         console.log(JSON.parse(r.text));

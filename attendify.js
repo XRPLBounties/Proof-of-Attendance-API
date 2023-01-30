@@ -16,7 +16,7 @@ const fs = require("fs");
  * It allows for creation of new claim events, checking whether claim is possible,
  * claiming, verifying NFT ownership, and fetching list of participants for a particular event
  * @author JustAnotherDevv
- * @version 1.1.8
+ * @version 1.1.9
  */
 class Attendify {
   /**
@@ -116,7 +116,7 @@ class Attendify {
         account: address,
       });
       let accountNfts = nfts.result.account_nfts;
-      console.log("Found ", accountNfts.length, " NFTs in account ", address);
+      //console.log("Found ", accountNfts.length, " NFTs in account ", address);
       for (;;) {
         if (nfts["result"]["marker"] === undefined) {
           break;
@@ -290,7 +290,13 @@ class Attendify {
         }
         // Mint NFTokens
         for (let i = 0; i < currentTickets; i++) {
-          console.log("minting ", i + 1, "/", nftokenCount, " NFTs");
+          console.log(
+            "minting ",
+            i + 1 + (nftokenCount - remainingTokensBeforeTicketing),
+            "/",
+            nftokenCount,
+            " NFTs"
+          );
           const transactionBlob = {
             TransactionType: "NFTokenMint",
             Account: vaultWallet.classicAddress,
@@ -307,7 +313,7 @@ class Attendify {
             NFTokenTaxon: curentEventId,
           };
           // Submit signed blob.
-          const tx = await client.submitAndWait(transactionBlob, {
+          const tx = await client.submit(transactionBlob, {
             wallet: vaultWallet,
           });
         }
@@ -317,7 +323,7 @@ class Attendify {
       this.nextEventId++;
       await this.addParticipant(undefined, curentEventId);
       return {
-        id: curentEventId,
+        eventId: curentEventId,
         account: vaultWallet.classicAddress,
         owner: walletAddress,
         URI: url,
@@ -335,7 +341,7 @@ class Attendify {
    * Verifies whether or not walletAddress account is owner of NFT from event with eventId that was issued by wallet that matches minter parameter
    * * Wallet from signature has to match walletAddress
    * @param {string} walletAddress - Address of wallet for the user wanting to verify
-   * @param {string} signature - Signature that should be signed by the same account as walletAddress
+   * @param {string} signature - Signature that should be signed by the same account as walletAddress. This could be done either using XUMM or `sign` function from xrpl library
    * @param {string} minter - The address of the wallet that minted the NFT.
    * @param {number} eventId - The event ID of the NFT.
    * @returns {boolean} Indicats whether the walletAddress owns any NFT from particular event

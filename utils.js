@@ -3,11 +3,11 @@ require("dotenv").config();
 /**
  * ERROR CODES
  */
-const ERR_NOT_FOUND = 404; //  Returned when requested resource was not found
-const ERR_PARAMS = 100; // Returned when incorrect params were provided or when some required params were null
-const ERR_IPFS = 101; // Returned if there was problem with IPFS upload
-const ERR_XRPL = 102; // Returned if there was problem connecting to XRPL or querrying required data from it
-const ERR_ATTENDIFY = 103; // Custom unexpected error related to Attendify library
+const ERR_NOT_FOUND = "Requested resource is missing"; //  Returned when requested resource was not found
+const ERR_PARAMS = "Incorrect params were provided"; // Returned when incorrect params were provided or when some required params were null
+const ERR_IPFS = "Can't upload data to IPFS"; // Returned if there was problem with IPFS upload
+const ERR_XRPL = "Problem with XRPL connection"; // Returned if there was problem connecting to XRPL or querrying required data from it
+const ERR_ATTENDIFY = "Attendify internal error"; // Custom unexpected error related to Attendify library
 
 const truncateStr = (str, n = 6) => {
   if (!str) return "";
