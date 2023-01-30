@@ -1,5 +1,7 @@
 # Attendify XRPL API library
 
+(Demo showcasing how to use it)[https://youtu.be/YLdJcGXUpjI]
+
 ## Project information
 
 Attendify is an API for PoA(proof of attendance system) built on the XRP ledger that can provide easy and secure way to mint and distribute NFTs or verify attendance at a wide range of events and activities happening in real life or online. Few potential uses for it are: 
