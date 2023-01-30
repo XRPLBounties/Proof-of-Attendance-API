@@ -1,6 +1,6 @@
 # Attendify XRPL API library
 
-(Demo showcasing how to use it)[https://youtu.be/YLdJcGXUpjI]
+[Demo showcasing how to use it](https://youtu.be/YLdJcGXUpjI)
 
 ## Project information
 
