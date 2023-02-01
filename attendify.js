@@ -16,7 +16,7 @@ const fs = require("fs");
  * It allows for creation of new claim events, checking whether claim is possible,
  * claiming, verifying NFT ownership, and fetching list of participants for a particular event
  * @author JustAnotherDevv
- * @version 1.1.9
+ * @version 1.2.0
  */
 class Attendify {
   /**

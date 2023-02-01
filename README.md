@@ -4,11 +4,11 @@
 
 ## Project information
 
-Attendify is an API for PoA(proof of attendance system) built on the XRP ledger that can provide easy and secure way to mint and distribute NFTs or verify attendance at a wide range of events and activities happening in real life or online. Few potential uses for it are: 
+Attendify is an API for PoA(proof of attendance system) built on the XRP ledger that can provide easy and secure way to mint and distribute NFTs or verify attendance at a wide range of events and activities happening in real life or online. Few potential uses for it are:
 
-⚫University students can use the system to quickly verify attendance at lectures, seminars or other educational events. 
+⚫University students can use the system to quickly verify attendance at lectures, seminars or other educational events.
 
-⚫Large events like conferences etc where it can be difficult to keep track of who has attended and who didn't. 
+⚫Large events like conferences etc where it can be difficult to keep track of who has attended and who didn't.
 
 ⚫Verifying employee showing up at meetings, training sessions etc.
 
@@ -36,7 +36,7 @@ Project was firstly developed during [XRPL NFT hackathon.](https://devpost.com/s
 
 ### REST API endpoints
 
-This API is built using the ExpressJS framework and the XRPL library, it connect to the local Attendify.js class to perform most of the actions. 
+This API is built using the ExpressJS framework and the XRPL library, it connect to the local Attendify.js class to perform most of the actions.
 
 ⚫ `GET /api/mint` - Creates new claimable event and premints NFTs for it. You must have at least X XRP in order to use this to handle the reserve requirements for the NFTs and the minting process which uses [Tickets](https://xrpl.org/tickets.html), where X is amount of tokens that should be minted multiplied by 2 + additional XRP for feees.
 
@@ -75,7 +75,7 @@ Example request `http://localhost:4000/api/mint?walletAddress=rpHJL8bRW81shYm3Lw
     -`success` - If `onlyCheckStatus` parameter was true it indicated that current parameters for selected event were sent
 
     -`transferred` - Indicates that new sell offer for NFT related to selected event was created successfully and details were sent to user
-    
+
 Example request `http://localhost:4000/api/claim?walletAddress=rpHJL8bRW81shYm3LwwsXovABps6SM51RS&type=2&minter=rMBU1wwAJZZz36YBNxug7YYHKeC5k3vqfG&eventId=0`
 
 ⚫ `GET /api/verifyOwnership` - Verifies whether or not user owns NFT with provided id for particular event from `minter` account.
@@ -114,7 +114,7 @@ Example request `http://localhost:4000/api/attendees?minter=raY33uxEbZFg7YS1ofFR
 
 ⚫execute `npm i` in CLI
 
-⚫copy .env.example content to .env file and fill with your data and API keys
+⚫copy .env.example content to .env file and fill with your data and API keys from INFURA dashboard. [Here's a guide](https://docs.infura.io/infura/getting-started) showcasing how you can quickly get these keys.
 
 ⚫execute `npm run start` in CLI to start the server
 
