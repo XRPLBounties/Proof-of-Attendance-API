@@ -16,7 +16,7 @@ const fs = require("fs");
  * It allows for creation of new claim events, checking whether claim is possible,
  * claiming, verifying NFT ownership, and fetching list of participants for a particular event
  * @author JustAnotherDevv
- * @version 1.2.0
+ * @version 1.2.1
  */
 class Attendify {
   /**
@@ -361,7 +361,8 @@ class Attendify {
       if (
         verifySignatureResult.signatureValid != true ||
         verifySignatureResult.signedBy != walletAddress ||
-        TX_MEMO != EXPECTED_MEMO_ID
+        TX_MEMO != EXPECTED_MEMO_ID ||
+        !EXPECTED_MEMO_ID
       )
         throw new Error(`${ERR_PARAMS}`);
       // Getting user NFTs and checking whether any NFT was issued by minter address
@@ -371,7 +372,10 @@ class Attendify {
       );
       if (accountNfts.length == 0) return false;
       for (let i = 0; i != accountNfts.length; i++) {
-        if (accountNfts[i].Issuer == minter) return true;
+        if (accountNfts[i].Issuer == minter) {
+          this.signatureMap.set(walletAddress, null);
+          return true;
+        }
         if (i == accountNfts.length - 1) return false;
       }
     } catch (error) {
