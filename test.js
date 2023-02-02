@@ -30,6 +30,7 @@ let walletForSignatureVerification = {
 // Empty variables for tests
 let newUser;
 let testEvent;
+let testMemoId;
 //let nftOffer;
 
 // API tests
@@ -113,6 +114,19 @@ describe("Testing typical user flow", function () {
       });
   }).timeout(600000);
 
+  it("Obtaining random ID for verification process", async () => {
+    return requestWithSupertest
+      .get(
+        `/api/startVerification?walletAddress=${walletForSignatureVerification.classicAddress}`
+      )
+      .then(async (r) => {
+        testMemoId = await JSON.parse(r.text).result;
+        console.log(JSON.parse(r.text));
+        r.res.statusCode.should.equal(200);
+        JSON.parse(r.text).result.should.be.a("string");
+      });
+  }).timeout(600000);
+
   it("Verifying ownership of NFT", async () => {
     const myWallet = xrpl.Wallet.fromSeed(walletForSignatureVerification.seed);
     let my_seq = 21404872;
@@ -120,15 +134,28 @@ describe("Testing typical user flow", function () {
       Account: myWallet.address,
       TransactionType: "Payment",
       Destination: "rf1BiGeXwwQoi8Z2ueFYTEXSwuJYfV2Jpn",
-      Amount: "13000000",
+      Amount: "0",
       Flags: 2147483648,
       LastLedgerSequence: 7835923,
       Fee: "13",
       Sequence: my_seq,
+      Memos: [
+        {
+          Memo: {
+            MemoData: xrpl.convertStringToHex(testMemoId),
+          },
+        },
+      ],
     };
     const signature = await myWallet.sign(txJSON);
     console.log("minter ", minter);
-    console.log("signature ", signature.tx_blob);
+    console.log("signature ", signature);
+    console.log(
+      "tx ",
+      xrpl.convertHexToString(
+        xrpl.decode(signature.tx_blob).Memos[0].Memo.MemoData
+      )
+    );
     return requestWithSupertest
       .get(
         `/api/verifyOwnership?walletAddress=${walletForSignatureVerification.classicAddress}&signature=${signature.tx_blob}&minter=raY33uxEbZFg7YS1ofFRioeENLsVdCgpC5&eventId=${testEvent.eventId}`

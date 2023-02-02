@@ -25,6 +25,8 @@ class Attendify {
   constructor() {
     // Initializes the next event ID to 0
     this.nextEventId = 0;
+    // Map with temporary numbers used to prove wallet ownership for verification
+    this.signatureMap = new Map();
   }
 
   /**
@@ -341,9 +343,9 @@ class Attendify {
    * Verifies whether or not walletAddress account is owner of NFT from event with eventId that was issued by wallet that matches minter parameter
    * * Wallet from signature has to match walletAddress
    * @param {string} walletAddress - Address of wallet for the user wanting to verify
-   * @param {string} signature - Signature that should be signed by the same account as walletAddress. This could be done either using XUMM or `sign` function from xrpl library
-   * @param {string} minter - The address of the wallet that minted the NFT.
-   * @param {number} eventId - The event ID of the NFT.
+   * @param {string} signature - Signature that should be signed by the same account as walletAddress. This could be done either using XUMM or `sign` function from xrpl library. The mock transaction from signature has to contain memo with number generated for walletAddress. See test.js for example implementation of this
+   * @param {string} minter - The address of the wallet that minted the NFT
+   * @param {number} eventId - The event ID of the NFT
    * @returns {boolean} Indicats whether the walletAddress owns any NFT from particular event
    */
   async verifyOwnership(walletAddress, signature, minter, eventId) {
@@ -351,25 +353,25 @@ class Attendify {
       if (!walletAddress || !signature || !minter || !eventId)
         throw new Error(`${ERR_PARAMS}`);
       const verifySignatureResult = verifySignature(signature);
-      // Checking if signature is valid and if user from signature is walletAddress
+      const TX_MEMO = xrpl.convertHexToString(
+        xrpl.decode(signature).Memos[0].Memo.MemoData
+      );
+      const EXPECTED_MEMO_ID = this.signatureMap.get(walletAddress);
+      // Checking if signature is valid, if user from signature is walletAddress and if Memo number is correct one
       if (
         verifySignatureResult.signatureValid != true ||
-        verifySignatureResult.signedBy != walletAddress
+        verifySignatureResult.signedBy != walletAddress ||
+        TX_MEMO != EXPECTED_MEMO_ID
       )
         throw new Error(`${ERR_PARAMS}`);
-      let NftToVerify;
-      // Getting user NFTs
+      // Getting user NFTs and checking whether any NFT was issued by minter address
       const accountNfts = await await this.getBatchNFTokens(
         walletAddress,
         eventId
       );
       if (accountNfts.length == 0) return false;
       for (let i = 0; i != accountNfts.length; i++) {
-        console.log(accountNfts[i].Issuer);
-        if (accountNfts[i].Issuer == minter) {
-          NftToVerify = accountNfts[i];
-          return true;
-        }
+        if (accountNfts[i].Issuer == minter) return true;
         if (i == accountNfts.length - 1) return false;
       }
     } catch (error) {

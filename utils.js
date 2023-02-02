@@ -40,8 +40,9 @@ const postToIPFS = async (data) => {
   let ipfs;
   let path = "";
   try {
+    const INFURA_DATA = process.env.INFURA_ID + ":" + process.env.INFURA_SECRET;
     const authorization =
-      "Basic " + btoa(process.env.INFURA_ID + ":" + process.env.INFURA_SECRET);
+      "Basic " + Buffer.from(INFURA_DATA, "utf8").toString("base64");
     ipfs = create({
       url: "https://infura-ipfs.io:5001/api/v0",
       headers: {
@@ -58,9 +59,28 @@ const postToIPFS = async (data) => {
   return path;
 };
 
+/**
+ * Generates random ID with custom length using symbols from `characters` string
+ * @param {integer} length - length of ID
+ * @returns
+ */
+function makeid(length) {
+  let result = "";
+  const characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  const charactersLength = characters.length;
+  let counter = 0;
+  while (counter < length) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    counter += 1;
+  }
+  return result;
+}
+
 module.exports = {
   ascii_to_hexa,
   postToIPFS,
+  makeid,
   ERR_ATTENDIFY,
   ERR_IPFS,
   ERR_NOT_FOUND,

@@ -78,11 +78,17 @@ Example request `http://localhost:4000/api/mint?walletAddress=rpHJL8bRW81shYm3Lw
 
 Example request `http://localhost:4000/api/claim?walletAddress=rpHJL8bRW81shYm3LwwsXovABps6SM51RS&type=2&minter=rMBU1wwAJZZz36YBNxug7YYHKeC5k3vqfG&eventId=0`
 
+⚫ `GET /api/startVerification` - Starts ownership verification process by generating unique ID for user that has to later be included in a Memo of signed tx.
+
+**@param {string} walletAddress** - Wallet address from user requesting verification
+
+Example request `http://localhost:4000/api/startVerification?walletAddress=raY33uxEbZFg7YS1ofFRioeENLsVdCgpC5`
+
 ⚫ `GET /api/verifyOwnership` - Verifies whether or not user owns NFT with provided id for particular event from `minter` account.
 
 **@param {string} walletAddress** - Wallet address from user requesting verification
 
-**@param {string} signature** - Signature that should be signed by the same account as walletAddress. This could be done either using XUMM or `sign` function from xrpl library
+**@param {string} signature** - Signature that should be signed by the same account as walletAddress. This could be done either using XUMM or `sign` function from xrpl library. The mock transaction from signature has to contain memo with number generated for walletAddress. See test.js for example implementation of this
 
 **@param {string} minter** - The minter address of the event
 

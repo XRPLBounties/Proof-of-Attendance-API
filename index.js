@@ -5,6 +5,7 @@ const { Attendify } = require("./attendify");
 const {
   postToIPFS,
   ascii_to_hexa,
+  makeid,
   ERR_ATTENDIFY,
   ERR_IPFS,
   ERR_NOT_FOUND,
@@ -169,6 +170,35 @@ app.get(
             offer: claimOffer,
           });
         }
+      } catch (error) {
+        console.error(error);
+        res.status(500).send({
+          statusText: `${error}`,
+        });
+      }
+    })();
+  }
+);
+
+/**
+ * Starts ownership verification process by generating unique ID for user that has to later be included in a Memo of signed tx
+ * @route GET /api/startVerification
+ * @param {string} walletAddress - The wallet address of the ticket owner
+ * @returns {object} result - An object with generated Memo ID
+ */
+app.get(
+  "/api/startVerification",
+  requireParams(["walletAddress"]),
+  (req, res) => {
+    (async () => {
+      try {
+        const { walletAddress } = await req.query;
+        const EXPECTED_MEMO_ID = await makeid(256);
+        console.log(EXPECTED_MEMO_ID);
+        await AttendifyLib.signatureMap.set(walletAddress, EXPECTED_MEMO_ID);
+        return res.send({
+          result: EXPECTED_MEMO_ID,
+        });
       } catch (error) {
         console.error(error);
         res.status(500).send({
