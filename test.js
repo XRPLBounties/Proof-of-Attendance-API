@@ -130,15 +130,32 @@ describe("Testing typical user flow", function () {
   it("Verifying ownership of NFT", async () => {
     const myWallet = xrpl.Wallet.fromSeed(walletForSignatureVerification.seed);
     let my_seq = 21404872;
+    // const txJSON = {
+    //   Account: myWallet.address,
+    //   TransactionType: "Payment",
+    //   Destination: "rf1BiGeXwwQoi8Z2ueFYTEXSwuJYfV2Jpn",
+    //   Amount: "0",
+    //   Flags: 2147483648,
+    //   LastLedgerSequence: 7835923,
+    //   Fee: "13",
+    //   Sequence: my_seq,
+    //   Memos: [
+    //     {
+    //       Memo: {
+    //         MemoData: xrpl.convertStringToHex(testMemoId),
+    //       },
+    //     },
+    //   ],
+    // };
     const txJSON = {
       Account: myWallet.address,
-      TransactionType: "Payment",
-      Destination: "rf1BiGeXwwQoi8Z2ueFYTEXSwuJYfV2Jpn",
-      Amount: "0",
-      Flags: 2147483648,
-      LastLedgerSequence: 7835923,
-      Fee: "13",
-      Sequence: my_seq,
+      TransactionType: "AccountSet",
+      Fee: "12",
+      Sequence: 5,
+      Domain: "6578616D706C652E636F6D",
+      SetFlag: 5,
+      MessageKey:
+        "03AB40A0490F9B7ED8DF29D246BF2D6269820A0EE7742ACDD457BEA7C7D0931EDB",
       Memos: [
         {
           Memo: {
@@ -158,7 +175,7 @@ describe("Testing typical user flow", function () {
     );
     return requestWithSupertest
       .get(
-        `/api/verifyOwnership?walletAddress=${walletForSignatureVerification.classicAddress}&signature=${signature.tx_blob}&minter=raY33uxEbZFg7YS1ofFRioeENLsVdCgpC5&eventId=${testEvent.eventId}`
+        `/api/verifyOwnership?walletAddress=${testUser.classicAddress}&signature=${signature.tx_blob}&minter=raY33uxEbZFg7YS1ofFRioeENLsVdCgpC5&eventId=${testEvent.eventId}`
       )
       .then((r) => {
         console.log(JSON.parse(r.text));

@@ -16,7 +16,7 @@ const fs = require("fs");
  * It allows for creation of new claim events, checking whether claim is possible,
  * claiming, verifying NFT ownership, and fetching list of participants for a particular event
  * @author JustAnotherDevv
- * @version 1.2.1
+ * @version 1.2.2
  */
 class Attendify {
   /**
@@ -253,7 +253,10 @@ class Attendify {
           250 -
           (await this.getAccountTickets(vaultWallet.address, client)).length;
         console.log("Max tickets", maxTickets);
-        if (maxTickets == 0) throw new Error(`${ERR_XRPL}`);
+        if (maxTickets == 0)
+          throw new Error(
+            `The minter has maximum allowed number of tickets at the moment. Please try again later, remove tickets that are not needed or use different minter account.`
+          );
         const balanceForTickets = parseInt(
           ((await client.getXrpBalance(vaultWallet.address)) - 1) / 2
         );
@@ -340,7 +343,7 @@ class Attendify {
   }
 
   /**
-   * Verifies whether or not walletAddress account is owner of NFT from event with eventId that was issued by wallet that matches minter parameter
+   * Verifies whether or not walletAddress account is owner of NFT from event with eventId that was issued by wallet that matches minter parameter. This step only works if user has interacted with the app previously by generating unique id that has to be included in the signed tx memo and turned into hex value
    * * Wallet from signature has to match walletAddress
    * @param {string} walletAddress - Address of wallet for the user wanting to verify
    * @param {string} signature - Signature that should be signed by the same account as walletAddress. This could be done either using XUMM or `sign` function from xrpl library. The mock transaction from signature has to contain memo with number generated for walletAddress. See test.js for example implementation of this
@@ -353,18 +356,30 @@ class Attendify {
       if (!walletAddress || !signature || !minter || !eventId)
         throw new Error(`${ERR_PARAMS}`);
       const verifySignatureResult = verifySignature(signature);
+      const DECODED_SIGNATURE = xrpl.decode(signature);
+      if (!DECODED_SIGNATURE.Memos)
+        throw new Error(
+          `Signed tx must include memo with ID obtained at the start of verification process.`
+        );
       const TX_MEMO = xrpl.convertHexToString(
-        xrpl.decode(signature).Memos[0].Memo.MemoData
+        DECODED_SIGNATURE.Memos[0].Memo.MemoData
       );
       const EXPECTED_MEMO_ID = this.signatureMap.get(walletAddress);
-      // Checking if signature is valid, if user from signature is walletAddress and if Memo number is correct one
-      if (
-        verifySignatureResult.signatureValid != true ||
-        verifySignatureResult.signedBy != walletAddress ||
-        TX_MEMO != EXPECTED_MEMO_ID ||
-        !EXPECTED_MEMO_ID
-      )
-        throw new Error(`${ERR_PARAMS}`);
+      // Checking if signature is valid, if user from signature is walletAddress, if verification ID exists for the walletAddress and if Memo ID is the correct one
+      if (verifySignatureResult.signatureValid != true)
+        throw new Error(`Signature is not valid.`);
+      if (verifySignatureResult.signedBy != walletAddress)
+        throw new Error(
+          `Signature wasn't signed by provided wallet address '${walletAddress}'. Please provide correct signature and try again.`
+        );
+      if (!EXPECTED_MEMO_ID)
+        throw new Error(
+          `Wallet address '${walletAddress}' don't have the verification ID generated for it yet. Please start verification process by obtaining a verification ID before performing ownership verification check.`
+        );
+      if (TX_MEMO != EXPECTED_MEMO_ID)
+        throw new Error(
+          `Memo '${TX_MEMO}' from signature does not match expected ID for the provided wallet address '${walletAddress}'.`
+        );
       // Getting user NFTs and checking whether any NFT was issued by minter address
       const accountNfts = await await this.getBatchNFTokens(
         walletAddress,
@@ -380,7 +395,8 @@ class Attendify {
       }
     } catch (error) {
       console.error(error);
-      return error;
+      // return error;
+      throw new Error(error);
     }
   }
 
@@ -401,7 +417,15 @@ class Attendify {
       let participantsJson = JSON.parse(data.toString());
       console.log(data);
       const attendees = participantsJson.data[eventId];
-      if (!attendees) throw new Error(`${ERR_ATTENDIFY}`);
+      // Check if claim event exists and if it has any attendees already
+      if (!attendees)
+        throw new Error(
+          `Claim event with id ${eventId} from minter with address ${minter} does not exist.`
+        );
+      if (attendees.length == 0)
+        throw new Error(
+          `Claim event with id ${eventId} from minter with address ${minter} does not have any attendees yet.`
+        );
       // Retrieve and return participants from claimable array
       return attendees;
     } catch (error) {

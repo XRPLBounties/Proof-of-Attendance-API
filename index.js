@@ -57,7 +57,7 @@ const requireParams = (params) => {
  * @param {string} title - The title of the event
  * @param {string} desc - The description of the event
  * @param {string} loc - The location of the event
- * @returns {object} result - An object with the mint result
+ * @returns {object} result - An object with details for the claim event that was successfully created
  * @throws {Error} If any of the walletAddress, tokenCount, url, title, desc, or loc parameters are missing or have an invalid value
  */
 app.get(
@@ -184,7 +184,7 @@ app.get(
  * Starts ownership verification process by generating unique ID for user that has to later be included in a Memo of signed tx
  * @route GET /api/startVerification
  * @param {string} walletAddress - The wallet address of the ticket owner
- * @returns {object} result - An object with generated Memo ID
+ * @returns {object} result - An object with generated Memo ID string
  */
 app.get(
   "/api/startVerification",
