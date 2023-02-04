@@ -227,14 +227,22 @@ app.get(
     (async () => {
       try {
         const { walletAddress, signature, minter, eventId } = await req.query;
-        return res.send({
-          result: await AttendifyLib.verifyOwnership(
-            walletAddress,
-            signature,
-            minter,
-            eventId
-          ),
-        });
+        const isOwnershipVerified = await AttendifyLib.verifyOwnership(
+          walletAddress,
+          signature,
+          minter,
+          eventId
+        );
+        console.log(typeof isOwnershipVerified, " \n", isOwnershipVerified);
+        if (isOwnershipVerified === true || isOwnershipVerified === false) {
+          return res.status(200).send({
+            result: isOwnershipVerified,
+          });
+        } else {
+          return res.status(500).send({
+            statusText: isOwnershipVerified.toString(),
+          });
+        }
       } catch (error) {
         console.error(error);
         res.status(500).send({

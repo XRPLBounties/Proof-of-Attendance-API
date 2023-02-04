@@ -27,10 +27,40 @@ let walletForSignatureVerification = {
   seed: "sEdVMJSLjuTAjaSeeZ6TEkpUWuTS83j",
 };
 
+const myWallet = xrpl.Wallet.fromSeed(walletForSignatureVerification.seed);
+let txJSON;
+const txNoMemo = {
+  Account: walletForSignatureVerification.address,
+  TransactionType: "AccountSet",
+  Fee: "12",
+  Sequence: 5,
+  Domain: "6578616D706C652E636F6D",
+  SetFlag: 5,
+  MessageKey:
+    "03AB40A0490F9B7ED8DF29D246BF2D6269820A0EE7742ACDD457BEA7C7D0931EDB",
+};
+const txWrongMemo = {
+  Account: walletForSignatureVerification.classicAddress,
+  TransactionType: "AccountSet",
+  Fee: "12",
+  Sequence: 5,
+  Domain: "6578616D706C652E636F6D",
+  SetFlag: 5,
+  MessageKey:
+    "03AB40A0490F9B7ED8DF29D246BF2D6269820A0EE7742ACDD457BEA7C7D0931EDB",
+  Memos: [
+    {
+      Memo: {
+        MemoData: xrpl.convertStringToHex("13"),
+      },
+    },
+  ],
+};
+
 // Empty variables for tests
 let newUser;
 let testEvent;
-let testMemoId;
+let testMemoId = 0;
 //let nftOffer;
 
 // API tests
@@ -114,40 +144,8 @@ describe("Testing typical user flow", function () {
       });
   }).timeout(600000);
 
-  it("Obtaining random ID for verification process", async () => {
-    return requestWithSupertest
-      .get(
-        `/api/startVerification?walletAddress=${walletForSignatureVerification.classicAddress}`
-      )
-      .then(async (r) => {
-        testMemoId = await JSON.parse(r.text).result;
-        console.log(JSON.parse(r.text));
-        r.res.statusCode.should.equal(200);
-        JSON.parse(r.text).result.should.be.a("string");
-      });
-  }).timeout(600000);
-
-  it("Verifying ownership of NFT", async () => {
-    const myWallet = xrpl.Wallet.fromSeed(walletForSignatureVerification.seed);
-    let my_seq = 21404872;
-    // const txJSON = {
-    //   Account: myWallet.address,
-    //   TransactionType: "Payment",
-    //   Destination: "rf1BiGeXwwQoi8Z2ueFYTEXSwuJYfV2Jpn",
-    //   Amount: "0",
-    //   Flags: 2147483648,
-    //   LastLedgerSequence: 7835923,
-    //   Fee: "13",
-    //   Sequence: my_seq,
-    //   Memos: [
-    //     {
-    //       Memo: {
-    //         MemoData: xrpl.convertStringToHex(testMemoId),
-    //       },
-    //     },
-    //   ],
-    // };
-    const txJSON = {
+  it("Trying to verify NFT ownership before obtaining verification ID", async () => {
+    txJSON = {
       Account: myWallet.address,
       TransactionType: "AccountSet",
       Fee: "12",
@@ -159,23 +157,114 @@ describe("Testing typical user flow", function () {
       Memos: [
         {
           Memo: {
-            MemoData: xrpl.convertStringToHex(testMemoId),
+            MemoData: xrpl.convertStringToHex(testMemoId.toString()),
           },
         },
       ],
     };
     const signature = await myWallet.sign(txJSON);
-    console.log("minter ", minter);
-    console.log("signature ", signature);
-    console.log(
-      "tx ",
-      xrpl.convertHexToString(
-        xrpl.decode(signature.tx_blob).Memos[0].Memo.MemoData
+    return requestWithSupertest
+      .get(
+        `/api/verifyOwnership?walletAddress=${walletForSignatureVerification.classicAddress}&signature=${signature.tx_blob}&minter=raY33uxEbZFg7YS1ofFRioeENLsVdCgpC5&eventId=${testEvent.eventId}`
       )
-    );
+      .then((r) => {
+        console.log(JSON.parse(r.text));
+        r.res.statusCode.should.equal(500);
+        JSON.parse(r.text).statusText.should.be.a("string");
+        JSON.parse(r.text).statusText.should.equal(
+          `Error: Wallet address '${walletForSignatureVerification.classicAddress}' don't have the verification ID generated for it yet. Please start verification process by obtaining a verification ID before performing ownership verification check.`
+        );
+      });
+  }).timeout(600000);
+
+  it("Trying to verify NFT ownership with signature from wrong address", async () => {
+    txJSON = {
+      Account: myWallet.address,
+      TransactionType: "AccountSet",
+      Fee: "12",
+      Sequence: 5,
+      Domain: "6578616D706C652E636F6D",
+      SetFlag: 5,
+      MessageKey:
+        "03AB40A0490F9B7ED8DF29D246BF2D6269820A0EE7742ACDD457BEA7C7D0931EDB",
+      Memos: [
+        {
+          Memo: {
+            MemoData: xrpl.convertStringToHex(testMemoId.toString()),
+          },
+        },
+      ],
+    };
+    const signature = await myWallet.sign(txJSON);
     return requestWithSupertest
       .get(
         `/api/verifyOwnership?walletAddress=${testUser.classicAddress}&signature=${signature.tx_blob}&minter=raY33uxEbZFg7YS1ofFRioeENLsVdCgpC5&eventId=${testEvent.eventId}`
+      )
+      .then((r) => {
+        console.log(JSON.parse(r.text));
+        r.res.statusCode.should.equal(500);
+        JSON.parse(r.text).statusText.should.be.a("string");
+        JSON.parse(r.text).statusText.should.equal(
+          `Error: Signature wasn't signed by provided wallet address '${testUser.classicAddress}'. Please provide correct signature and try again.`
+        );
+      });
+  }).timeout(600000);
+
+  it("Obtaining random ID for verification process", async () => {
+    return requestWithSupertest
+      .get(
+        `/api/startVerification?walletAddress=${walletForSignatureVerification.classicAddress}`
+      )
+      .then(async (r) => {
+        testMemoId = await JSON.parse(r.text).result;
+        txJSON.Memos[0].Memo = {
+          MemoData: xrpl.convertStringToHex(
+            await JSON.parse(r.text).result.toString()
+          ),
+        };
+        console.log(JSON.parse(r.text));
+        r.res.statusCode.should.equal(200);
+        JSON.parse(r.text).result.should.be.a("string");
+      });
+  }).timeout(600000);
+
+  it("Trying to verify ownership with wrong signature", async () => {
+    const signature = await myWallet.sign(txJSON);
+    return requestWithSupertest
+      .get(
+        `/api/verifyOwnership?walletAddress=${walletForSignatureVerification.classicAddress}&signature=2280000000240000000268400000000000000C73210333C718C9CB716E0575454F4A343D46B284ED51151B9C7383524B82C10B262095744730450221009A4D99017F8FD6881D888047E2F9F90C068C09EC9308BC8526116B539D6DD44102207FAA7E8756F67FE7EE1A88884F120A00A8EC37E7D3E5ED3E02FEA7B1D97AA05581146C0994D3FCB140CAB36BAE9465137448883FA489&minter=raY33uxEbZFg7YS1ofFRioeENLsVdCgpC5&eventId=${testEvent.eventId}`
+      )
+      .then((r) => {
+        console.log(JSON.parse(r.text));
+        r.res.statusCode.should.equal(500);
+        JSON.parse(r.text).statusText.should.be.a("string");
+        JSON.parse(r.text).statusText.should.equal(
+          "Error: Signature is not valid."
+        );
+      });
+  }).timeout(600000);
+
+  it("Trying to verify ownership with wrong signature Memo", async () => {
+    const signature = await myWallet.sign(txWrongMemo);
+    return requestWithSupertest
+      .get(
+        `/api/verifyOwnership?walletAddress=${walletForSignatureVerification.classicAddress}&signature=${signature.tx_blob}&minter=raY33uxEbZFg7YS1ofFRioeENLsVdCgpC5&eventId=${testEvent.eventId}`
+      )
+      .then((r) => {
+        console.log(JSON.parse(r.text));
+        r.res.statusCode.should.equal(500);
+        JSON.parse(r.text).statusText.should.be.a("string");
+        JSON.parse(r.text).statusText.should.equal(
+          `Error: Memo '13' from signature does not match expected ID for the provided wallet address '${walletForSignatureVerification.classicAddress}'.`
+        );
+      });
+  }).timeout(600000);
+
+  it("Verifying ownership of NFT", async () => {
+    const signature = await myWallet.sign(txJSON);
+    return requestWithSupertest
+      .get(
+        `/api/verifyOwnership?walletAddress=${walletForSignatureVerification.classicAddress}&signature=${signature.tx_blob}&minter=raY33uxEbZFg7YS1ofFRioeENLsVdCgpC5&eventId=${testEvent.eventId}`
       )
       .then((r) => {
         console.log(JSON.parse(r.text));

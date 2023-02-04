@@ -357,6 +357,12 @@ class Attendify {
         throw new Error(`${ERR_PARAMS}`);
       const verifySignatureResult = verifySignature(signature);
       const DECODED_SIGNATURE = xrpl.decode(signature);
+      if (verifySignatureResult.signatureValid != true)
+        throw new Error(`Signature is not valid.`);
+      if (verifySignatureResult.signedBy != walletAddress)
+        throw new Error(
+          `Signature wasn't signed by provided wallet address '${walletAddress}'. Please provide correct signature and try again.`
+        );
       if (!DECODED_SIGNATURE.Memos)
         throw new Error(
           `Signed tx must include memo with ID obtained at the start of verification process.`
@@ -365,13 +371,6 @@ class Attendify {
         DECODED_SIGNATURE.Memos[0].Memo.MemoData
       );
       const EXPECTED_MEMO_ID = this.signatureMap.get(walletAddress);
-      // Checking if signature is valid, if user from signature is walletAddress, if verification ID exists for the walletAddress and if Memo ID is the correct one
-      if (verifySignatureResult.signatureValid != true)
-        throw new Error(`Signature is not valid.`);
-      if (verifySignatureResult.signedBy != walletAddress)
-        throw new Error(
-          `Signature wasn't signed by provided wallet address '${walletAddress}'. Please provide correct signature and try again.`
-        );
       if (!EXPECTED_MEMO_ID)
         throw new Error(
           `Wallet address '${walletAddress}' don't have the verification ID generated for it yet. Please start verification process by obtaining a verification ID before performing ownership verification check.`
@@ -395,8 +394,7 @@ class Attendify {
       }
     } catch (error) {
       console.error(error);
-      // return error;
-      throw new Error(error);
+      return error;
     }
   }
 
