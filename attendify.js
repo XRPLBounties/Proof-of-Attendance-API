@@ -373,7 +373,7 @@ class Attendify {
       const EXPECTED_MEMO_ID = this.signatureMap.get(walletAddress);
       if (!EXPECTED_MEMO_ID)
         throw new Error(
-          `Wallet address '${walletAddress}' don't have the verification ID generated for it yet. Please start verification process by obtaining a verification ID before performing ownership verification check.`
+          `Wallet address '${walletAddress}' doesn't have the verification ID generated for it yet. Please start the verification process by calling `startVerification` and including the returned value as part of the memo in your signed transaction when calling this function.`
         );
       if (TX_MEMO != EXPECTED_MEMO_ID)
         throw new Error(
