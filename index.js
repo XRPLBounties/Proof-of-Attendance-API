@@ -124,6 +124,12 @@ app.get(
         let requestedClaim = JSON.parse(data.toString()).data[
           parseInt(eventId)
         ];
+        if (
+          xrpl.Wallet.fromSeed(process.env.WALLET_SEED).classicAddress != minter
+        )
+          res.status(500).send({
+            statusText: `minter address does not match local minter account`,
+          });
         const claimableTokens = await AttendifyLib.getBatchNFTokens(
           minter,
           eventId
@@ -227,13 +233,18 @@ app.get(
     (async () => {
       try {
         const { walletAddress, signature, minter, eventId } = await req.query;
+        if (
+          xrpl.Wallet.fromSeed(process.env.WALLET_SEED).classicAddress != minter
+        )
+          res.status(500).send({
+            statusText: `minter address does not match local minter account`,
+          });
         const isOwnershipVerified = await AttendifyLib.verifyOwnership(
           walletAddress,
           signature,
           minter,
           eventId
         );
-        console.log(typeof isOwnershipVerified, " \n", isOwnershipVerified);
         if (isOwnershipVerified === true || isOwnershipVerified === false) {
           return res.status(200).send({
             result: isOwnershipVerified,
@@ -265,6 +276,12 @@ app.get("/api/attendees", requireParams(["minter", "eventId"]), (req, res) => {
   (async () => {
     try {
       const { minter, eventId } = await req.query;
+      if (
+        xrpl.Wallet.fromSeed(process.env.WALLET_SEED).classicAddress != minter
+      )
+        res.status(500).send({
+          statusText: `minter address does not match local minter account`,
+        });
       return res.send({
         result: await AttendifyLib.attendeesLookup(minter, eventId),
       });

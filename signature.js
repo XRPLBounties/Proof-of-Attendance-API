@@ -4,7 +4,7 @@ const xrpl = require("xrpl");
  * Run this file locally with 2 arguments just like the example below to generate signed tx blob
  * The first argument is seed for the user wallet
  * The second argument should be verification ID returned from `api/startVerification` endpoint
- * node .\local.js sEdVMJSLjuTAjaSeeZ6TEkpUWuTS83j PPrnp3O4FI3Z5VCnMvvsMwzjMCmrtZnUNqWQEqkGXIuGJ7xzpCdhUql3X9SwlP1d1unotJX8FHCMJTgbYUQfa7b1nSVb7FY9wSrWH3NxQIF9py1MXfOGGiZyjM6S4WuxhxK1Ru499u9jhnZ3vhifyRPVYFytDD2YUsjqG7F3ojWkVC4VoOEHP4uuztfb2k0ZueCIP1tfbgoAXEuU5DxoSLAWx9kP3b7nKuOqV6lvlbKWGzCI5xE1YG5ExTkowk0M
+ * node .\signature.js sEdVMJSLjuTAjaSeeZ6TEkpUWuTS83j PPrnp3O4FI3Z5VCnMvvsMwzjMCmrtZnUNqWQEqkGXIuGJ7xzpCdhUql3X9SwlP1d1unotJX8FHCMJTgbYUQfa7b1nSVb7FY9wSrWH3NxQIF9py1MXfOGGiZyjM6S4WuxhxK1Ru499u9jhnZ3vhifyRPVYFytDD2YUsjqG7F3ojWkVC4VoOEHP4uuztfb2k0ZueCIP1tfbgoAXEuU5DxoSLAWx9kP3b7nKuOqV6lvlbKWGzCI5xE1YG5ExTkowk0M
  */
 
 let testMemoId;

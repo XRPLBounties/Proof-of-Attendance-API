@@ -30,6 +30,25 @@ class Attendify {
   }
 
   /**
+   *
+   * @param {string} walletAddress - The address of the participant's wallet
+   * @returns true if account was found on selected network or false if it wasn't
+   */
+  async checkIfAccountExists(walletAddress) {
+    try {
+      const client = new xrpl.Client(process.env.SELECTED_NETWORK);
+      await client.connect();
+      const tx = await client.getBalances(walletAddress);
+      await client.disconnect();
+      console.log(tx);
+      return true;
+    } catch (error) {
+      console.error(error);
+      return false;
+    }
+  }
+
+  /**
    * Adds a participant to an event or creates event array for participants
    * Saves the JSON with participants to local JSON file
    * @param {string} walletAddress - The address of the participant's wallet
@@ -111,6 +130,8 @@ class Attendify {
   async getBatchNFTokens(address, taxon) {
     try {
       if (!address) throw new Error(`${ERR_PARAMS}`);
+      if ((await this.checkIfAccountExists(address)) == false)
+        throw new Error(`Account from request was not found om XRPL`);
       const client = new xrpl.Client(process.env.SELECTED_NETWORK);
       await client.connect();
       let nfts = await client.request({
@@ -119,7 +140,7 @@ class Attendify {
       });
       let accountNfts = nfts.result.account_nfts;
       //console.log("Found ", accountNfts.length, " NFTs in account ", address);
-      for (;;) {
+      while (true) {
         if (nfts["result"]["marker"] === undefined) {
           break;
         } else {
@@ -157,6 +178,8 @@ class Attendify {
   async createSellOfferForClaim(buyer, minterSeed, TokenID) {
     try {
       if (!buyer || !minterSeed || !TokenID) throw new Error(`${ERR_PARAMS}`);
+      if ((await this.checkIfAccountExists(buyer)) == false)
+        throw new Error(`Account from request was not found om XRPL`);
       const seller = xrpl.Wallet.fromSeed(minterSeed);
       const client = new xrpl.Client(process.env.SELECTED_NETWORK);
       await client.connect();
@@ -206,7 +229,7 @@ class Attendify {
       type: "ticket",
     });
     let resTickets = res.result.account_objects;
-    for (;;) {
+    while (true) {
       console.log("marker, ", res["result"]["marker"]);
       if (res["result"]["marker"] === undefined) {
         return resTickets;
@@ -244,6 +267,8 @@ class Attendify {
     try {
       if (!walletAddress || !nftokenCount || !url || !title)
         throw new Error(`${ERR_PARAMS}`);
+      if ((await this.checkIfAccountExists(walletAddress)) == false)
+        throw new Error(`Account from request was not found om XRPL`);
       const client = new xrpl.Client(process.env.SELECTED_NETWORK);
       await client.connect();
       const vaultWallet = xrpl.Wallet.fromSeed(minterSeed);
@@ -355,6 +380,8 @@ class Attendify {
     try {
       if (!walletAddress || !signature || !minter || !eventId)
         throw new Error(`${ERR_PARAMS}`);
+      if ((await this.checkIfAccountExists(walletAddress)) == false)
+        throw new Error(`Account from request was not found om XRPL`);
       const verifySignatureResult = verifySignature(signature);
       const DECODED_SIGNATURE = xrpl.decode(signature);
       if (verifySignatureResult.signatureValid != true)
@@ -373,17 +400,14 @@ class Attendify {
       const EXPECTED_MEMO_ID = this.signatureMap.get(walletAddress);
       if (!EXPECTED_MEMO_ID)
         throw new Error(
-          `Wallet address '${walletAddress}' doesn't have the verification ID generated for it yet. Please start the verification process by calling `startVerification` and including the returned value as part of the memo in your signed transaction when calling this function.`
+          `Wallet address '${walletAddress}' doesn't have the verification ID generated for it yet. Please start the verification process by calling 'startVerification' and including the returned value as part of the memo in your signed transaction when calling this function.`
         );
       if (TX_MEMO != EXPECTED_MEMO_ID)
         throw new Error(
           `Memo '${TX_MEMO}' from signature does not match expected ID for the provided wallet address '${walletAddress}'.`
         );
       // Getting user NFTs and checking whether any NFT was issued by minter address
-      const accountNfts = await this.getBatchNFTokens(
-        walletAddress,
-        eventId
-      );
+      const accountNfts = await this.getBatchNFTokens(walletAddress, eventId);
       if (accountNfts.length == 0) return false;
       for (let i = 0; i != accountNfts.length; i++) {
         if (accountNfts[i].Issuer == minter) {

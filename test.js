@@ -165,14 +165,14 @@ describe("Testing typical user flow", function () {
     const signature = await myWallet.sign(txJSON);
     return requestWithSupertest
       .get(
-        `/api/verifyOwnership?walletAddress=${walletForSignatureVerification.classicAddress}&signature=${signature.tx_blob}&minter=raY33uxEbZFg7YS1ofFRioeENLsVdCgpC5&eventId=${testEvent.eventId}`
+        `/api/verifyOwnership?walletAddress=${walletForSignatureVerification.classicAddress}&signature=${signature.tx_blob}&minter=${minter}&eventId=${testEvent.eventId}`
       )
       .then((r) => {
         console.log(JSON.parse(r.text));
         r.res.statusCode.should.equal(500);
         JSON.parse(r.text).statusText.should.be.a("string");
         JSON.parse(r.text).statusText.should.equal(
-          `Error: Wallet address '${walletForSignatureVerification.classicAddress}' don't have the verification ID generated for it yet. Please start verification process by obtaining a verification ID before performing ownership verification check.`
+          `Error: Wallet address '${walletForSignatureVerification.classicAddress}' doesn't have the verification ID generated for it yet. Please start the verification process by calling 'startVerification' and including the returned value as part of the memo in your signed transaction when calling this function.`
         );
       });
   }).timeout(600000);
@@ -198,7 +198,7 @@ describe("Testing typical user flow", function () {
     const signature = await myWallet.sign(txJSON);
     return requestWithSupertest
       .get(
-        `/api/verifyOwnership?walletAddress=${testUser.classicAddress}&signature=${signature.tx_blob}&minter=raY33uxEbZFg7YS1ofFRioeENLsVdCgpC5&eventId=${testEvent.eventId}`
+        `/api/verifyOwnership?walletAddress=${testUser.classicAddress}&signature=${signature.tx_blob}&minter=${minter}&eventId=${testEvent.eventId}`
       )
       .then((r) => {
         console.log(JSON.parse(r.text));
@@ -232,7 +232,7 @@ describe("Testing typical user flow", function () {
     const signature = await myWallet.sign(txJSON);
     return requestWithSupertest
       .get(
-        `/api/verifyOwnership?walletAddress=${walletForSignatureVerification.classicAddress}&signature=2280000000240000000268400000000000000C73210333C718C9CB716E0575454F4A343D46B284ED51151B9C7383524B82C10B262095744730450221009A4D99017F8FD6881D888047E2F9F90C068C09EC9308BC8526116B539D6DD44102207FAA7E8756F67FE7EE1A88884F120A00A8EC37E7D3E5ED3E02FEA7B1D97AA05581146C0994D3FCB140CAB36BAE9465137448883FA489&minter=raY33uxEbZFg7YS1ofFRioeENLsVdCgpC5&eventId=${testEvent.eventId}`
+        `/api/verifyOwnership?walletAddress=${walletForSignatureVerification.classicAddress}&signature=2280000000240000000268400000000000000C73210333C718C9CB716E0575454F4A343D46B284ED51151B9C7383524B82C10B262095744730450221009A4D99017F8FD6881D888047E2F9F90C068C09EC9308BC8526116B539D6DD44102207FAA7E8756F67FE7EE1A88884F120A00A8EC37E7D3E5ED3E02FEA7B1D97AA05581146C0994D3FCB140CAB36BAE9465137448883FA489&minter=${minter}&eventId=${testEvent.eventId}`
       )
       .then((r) => {
         console.log(JSON.parse(r.text));
@@ -248,7 +248,7 @@ describe("Testing typical user flow", function () {
     const signature = await myWallet.sign(txWrongMemo);
     return requestWithSupertest
       .get(
-        `/api/verifyOwnership?walletAddress=${walletForSignatureVerification.classicAddress}&signature=${signature.tx_blob}&minter=raY33uxEbZFg7YS1ofFRioeENLsVdCgpC5&eventId=${testEvent.eventId}`
+        `/api/verifyOwnership?walletAddress=${walletForSignatureVerification.classicAddress}&signature=${signature.tx_blob}&minter=${minter}&eventId=${testEvent.eventId}`
       )
       .then((r) => {
         console.log(JSON.parse(r.text));
@@ -264,7 +264,7 @@ describe("Testing typical user flow", function () {
     const signature = await myWallet.sign(txJSON);
     return requestWithSupertest
       .get(
-        `/api/verifyOwnership?walletAddress=${walletForSignatureVerification.classicAddress}&signature=${signature.tx_blob}&minter=raY33uxEbZFg7YS1ofFRioeENLsVdCgpC5&eventId=${testEvent.eventId}`
+        `/api/verifyOwnership?walletAddress=${walletForSignatureVerification.classicAddress}&signature=${signature.tx_blob}&minter=${minter}&eventId=${testEvent.eventId}`
       )
       .then((r) => {
         console.log(JSON.parse(r.text));
