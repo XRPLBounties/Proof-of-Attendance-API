@@ -380,7 +380,7 @@ class Attendify {
           `Memo '${TX_MEMO}' from signature does not match expected ID for the provided wallet address '${walletAddress}'.`
         );
       // Getting user NFTs and checking whether any NFT was issued by minter address
-      const accountNfts = await await this.getBatchNFTokens(
+      const accountNfts = await this.getBatchNFTokens(
         walletAddress,
         eventId
       );
