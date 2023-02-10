@@ -162,7 +162,7 @@ app.get(
         if (type == 1) {
           return res.send({
             status: "success",
-            // result: claimableTokens,
+            result: claimableTokens.length,
           });
         } else {
           const claimOffer = await AttendifyLib.createSellOfferForClaim(
