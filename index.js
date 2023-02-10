@@ -138,7 +138,7 @@ app.get(
         if (!requestedClaim) {
           return res.send({
             status: "404",
-            result: "The requested claim event does not exist.",
+            // result: "The requested claim event does not exist.",
           });
         }
         // Check if user already claimed NFT
@@ -149,20 +149,20 @@ app.get(
         )
           return res.send({
             status: "claimed",
-            result: requestedClaim,
+            // result: requestedClaim,
           });
-        //Check if there are any remaining NFTs
+        // Check if there are any remaining NFTs
         if (claimableTokens.length == 0) {
           return res.send({
             status: "empty",
-            result: requestedClaim,
+            // result: requestedClaim,
           });
         }
-        //console.log(claimableTokens);
+        // Checking which type of action should be performed
         if (type == 1) {
           return res.send({
             status: "success",
-            result: claimableTokens,
+            // result: claimableTokens,
           });
         } else {
           const claimOffer = await AttendifyLib.createSellOfferForClaim(
@@ -172,7 +172,7 @@ app.get(
           );
           return res.send({
             status: "transferred",
-            result: claimableTokens,
+            // result: claimableTokens,
             offer: claimOffer,
           });
         }
