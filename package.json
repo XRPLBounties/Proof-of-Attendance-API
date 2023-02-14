@@ -1,0 +1,26 @@
+{
+  "dependencies": {
+    "chai": "^4.3.7",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "ipfs-http-client": "^59.0.0",
+    "verify-xrpl-signature": "^0.4.1",
+    "xrpl": "^2.6.0"
+  },
+  "name": "xrpjl_nft_ui_server",
+  "version": "1.0.0",
+  "description": "server for easy creation of multiple NFTs in web browser on XRP ledger",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha",
+    "start": "nodemon server.js",
+    "build": "node server.js"
+  },
+  "author": "Daniel",
+  "license": "ISC",
+  "devDependencies": {
+    "supertest": "^6.3.3",
+    "mocha": "*",
+    "nodemon": "*"
+  }
+}
