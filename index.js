@@ -245,6 +245,7 @@ app.get(
           minter,
           eventId
         );
+        console.log(isOwnershipVerified);
         if (isOwnershipVerified === true || isOwnershipVerified === false) {
           return res.status(200).send({
             result: isOwnershipVerified,

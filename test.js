@@ -121,15 +121,33 @@ describe("Testing typical user flow", function () {
   it("Claiming offer for NFT from event", async () => {
     return requestWithSupertest
       .get(
-        `/api/claim?walletAddress=${testUser.classicAddress}&minter=${minter}&eventId=${testEvent.eventId}&type=2`
+        `/api/claim?walletAddress=${myWallet.classicAddress}&minter=${minter}&eventId=${testEvent.eventId}&type=2`
       )
-      .then((r) => {
+      .then(async (r) => {
         // console.log(JSON.parse(r.text).result.length);
-        console.log("offer ", JSON.parse(r.text).offer);
+        const nftOffer = JSON.parse(r.text).offer;
+        console.log("offer ", nftOffer);
         r.res.statusCode.should.equal(200);
         // JSON.parse(r.text).result.should.be.a("object");
         // JSON.parse(r.text).result.should.be.a("array");
         JSON.parse(r.text).status.should.equal("transferred");
+
+        const client = new xrpl.Client(process.env.SELECTED_NETWORK);
+        await client.connect();
+
+        const transactionBlob = {
+          TransactionType: "NFTokenAcceptOffer",
+          Account: myWallet.classicAddress,
+          NFTokenSellOffer: nftOffer.nft_offer_index.toString(),
+        };
+
+        const tx = await client.submitAndWait(transactionBlob, {
+          wallet: myWallet,
+        });
+
+        await client.disconnect();
+
+        console.log(tx.result.meta.TransactionResult);
       });
   }).timeout(600000);
 
@@ -140,7 +158,7 @@ describe("Testing typical user flow", function () {
         console.log(JSON.parse(r.text));
         r.res.statusCode.should.equal(200);
         JSON.parse(r.text).result.should.be.a("array");
-        JSON.parse(r.text).result[0].user.should.equal(testUser.classicAddress);
+        JSON.parse(r.text).result[0].user.should.equal(myWallet.classicAddress);
       });
   }).timeout(600000);
 

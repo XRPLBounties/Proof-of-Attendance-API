@@ -1,6 +1,6 @@
 # Attendify XRPL API library
 
-[Demo showcasing how to use it](https://youtu.be/YLdJcGXUpjI)
+[Demo showcasing how to use it](https://youtu.be/ZT6HOUmjxeo)
 
 ## Project information
 
@@ -111,7 +111,6 @@ Run this file locally with 2 arguments just like the example below to generate s
 - The second argument should be NFT offer ID returned from `api/mint` endpoint
 
   `node .\acceptOffer.js sEdVMJSLjuTAjaSeeZ6TEkpUWuTS83j 80517CC6087108B777710DFD0C48B6CB66A43947A96CA4C4B145574E27E9749A`
-
 
 Example request `http://localhost:4000/api/startVerification?walletAddress=raY33uxEbZFg7YS1ofFRioeENLsVdCgpC5`
 
